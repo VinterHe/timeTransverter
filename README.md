@@ -1,6 +1,8 @@
 # timeTransverter
 a tool can converts timestamps and dates
-# 使用python制作时间戳转换工具
+# 使用python制作时间戳转换工具 exe文件在bin目录下
+
+
 
 python 时间戳转日期 日期转时间戳
 
