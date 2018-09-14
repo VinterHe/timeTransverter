@@ -49,6 +49,8 @@ class timeTransverter:
         self.drawDateToStamp()
         self.drawButtons()
 
+        self.tk.mainloop()
+
     def drawStampToDate(self):
         stampLabel = Label(self.tk, text = '时间戳')
         dateLabel = Label(self.tk, text = '日期')
@@ -109,5 +111,3 @@ class timeTransverter:
 
 t = timeTransverter()
 t.run()
-
-mainloop()
