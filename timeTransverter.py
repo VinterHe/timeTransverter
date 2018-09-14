@@ -9,77 +9,105 @@ import win32con
 3、通过Button按钮进行转换和刷新操作。
 4、通过Entry来获取用户输入。
 '''
-root = Tk()
-root.title('时间戳转换')
-root.resizable(0,0)#禁止拉伸 会变丑
-# 对变量进行创建，和数据初始化
-Label1 = Label(root, text='时间戳:').grid(row=0, column=0)
-Label2 = Label(root, text='日期:').grid(row=1, column=0)
-v1 = StringVar()
-p1 = StringVar()
-v1.set(int(time()))
-e1 = Entry(root, textvariable=v1)  # Entry 是 Tkinter 用来接收字符串等输入的控件.
-e2 = Entry(root, textvariable=p1)
-e1.grid(row=0, column=1, columnspan=2, padx=20, pady=5)  # 设置输入框显示的位置，以及长和宽属性
-e2.grid(row=1, column=1, columnspan=2, padx=20, pady=5)
+class timeTransverter:
+    def __init__(self):
+        self.tk = Tk()
+        self.tk.title('时间戳转换')
+        self.tk.resizable(0,0)#禁止拉伸
+        self.ts1 = StringVar()
+        self.date1 = StringVar()
+        self.ts2 = StringVar()
+        self.date2 = StringVar()
+        self.initData()
+        # self.timeToDateButton = ''
+        # self.dateToTimeButton = ''
+        # self.copyButton = ''
+        # self.pasteButton = ''
+        # self.exitButton = ''
+        self.e3 = Entry(self.tk, textvariable=self.date2)  # Entry 是 Tkinter 用来接收字符串等输入的控件.
+        self.e4 = Entry(self.tk, textvariable=self.ts2)
+        self.e1 = Entry(self.tk, textvariable=self.ts1)  # Entry 是 Tkinter 用来接收字符串等输入的控件.
+        self.e2 = Entry(self.tk, textvariable=self.date1)
 
-Label3 = Label(root, text='日期:').grid(row=3, column=0)
-Label4 = Label(root, text='时间戳:').grid(row=4, column=0)
-v2 = StringVar()
-p2 = StringVar()
-timeArray1 = localtime(int(time()))
-v2.set(strftime("%Y-%m-%d %H:%M:%S", timeArray1))
-p2.set(int(time()))
-e3 = Entry(root, textvariable=v2)  # Entry 是 Tkinter 用来接收字符串等输入的控件.
-e4 = Entry(root, textvariable=p2)
-e3.grid(row=3, column=1,columnspan =2 ,padx=20, pady=5)  # 设置输入框显示的位置，以及长和宽属性
-e4.grid(row=4, column=1,columnspan =2 ,padx=20, pady=5)
-#时间戳转换成日期
-def trans1():
-    timeArray = localtime(int(e1.get()))
-    p1.set(strftime("%Y-%m-%d %H:%M:%S", timeArray))
-#日期转换为时间戳
-def trans2():
-    p2.set(int(mktime(strptime(e3.get(), "%Y-%m-%d %H:%M:%S"))))
-#刷新第二个模组
-def refresh():
-    timeArray1 = localtime(int(time()))
-    v2.set(strftime("%Y-%m-%d %H:%M:%S", timeArray1))
-    p2.set(int(time()))
-#复制时间戳
-def copy():
-    wincld.OpenClipboard()
-    wincld.EmptyClipboard()
-    wincld.SetClipboardData(win32con.CF_UNICODETEXT, e4.get())
-    wincld.CloseClipboard()
-# 粘贴时间戳
-def paste():
-    wincld.OpenClipboard()
-    text_result = wincld.GetClipboardData(win32con.CF_UNICODETEXT)
-    wincld.CloseClipboard()
-    v1.set(int(text_result))
+        # 设置窗口初始显示位置
+        sw = self.tk.winfo_screenwidth()
+        sh = self.tk.winfo_screenheight()
+        x = (sw) / 2
+        y = (sh) / 2
+        self.tk.geometry("+%d+%d" % (x, y))
 
+    def initData(self):
+        # 对数据进行初始化
+        self.ts1.set(int(time()))
+        # 对数据进行初始化
+        timeArray1 = localtime(int(time()))
+        self.date2.set(strftime("%Y-%m-%d %H:%M:%S", timeArray1))
+        self.ts2.set(int(time()))
 
+    def run(self):
+        self.drawStampToDate()
+        self.drawDateToStamp()
+        self.drawButtons()
 
+    def drawStampToDate(self):
+        stampLabel = Label(self.tk, text = '时间戳')
+        dateLabel = Label(self.tk, text = '日期')
+        stampLabel.grid(row=0,column=0);
+        dateLabel.grid(row=1,column=0);
+        self.e1.grid(row=0, column=1, columnspan=2, padx=20, pady=5)  # 设置输入框显示的位置，以及长和宽属性
+        self.e2.grid(row=1, column=1, columnspan=2, padx=20, pady=5)
 
-Button(root, text='转换', width=8, command=trans1) \
-    .grid(row=2, column=0, sticky=W, padx=8, pady=5)
-Button(root, text='粘贴', width=8, command=paste) \
-    .grid(row=2, column=1, sticky=W, padx=8, pady=5)
-Button(root, text='转换', width=8, command=trans2) \
-    .grid(row=5, column=0, sticky=W, padx=8, pady=5)
-Button(root, text='刷新', width=8, command=refresh) \
-    .grid(row=5, column=1, sticky=W, padx=8, pady=5)
-Button(root, text='复制', width=8, command=copy) \
-    .grid(row=5, column=2, sticky=W, padx=8, pady=5)
-Button(root, text='退出', width=8, command=root.quit) \
-    .grid(row=6, column=1, sticky=E, padx=8, pady=5)
-trans1()
-trans2()
-#设置窗口初始显示位置
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-x = (sw) / 2
-y = (sh) / 2
-root.geometry("+%d+%d" %(x,y))
+        #调用转换功能
+        self.stampToDate()
+
+    def drawDateToStamp(self):
+        dateLabel = Label(self.tk, text='日期:').grid(row=3, column=0)
+        stampLabel = Label(self.tk, text='时间戳:').grid(row=4, column=0)
+        self.e3.grid(row=3, column=1, columnspan=2, padx=20, pady=5)  # 设置输入框显示的位置，以及长和宽属性
+        self.e4.grid(row=4, column=1, columnspan=2, padx=20, pady=5)
+        #调用转换功能
+        self.dateToStamp()
+    def drawButtons(self):
+        Button(self.tk, text='转换', width=8, command=self.stampToDate) \
+            .grid(row=2, column=0, sticky=W, padx=8, pady=5)
+        Button(self.tk, text=' 粘贴时间戳 ', width=8, command=self.paste) \
+            .grid(row=2, column=2, sticky=W, padx=8, pady=5)
+        Button(self.tk, text='转换', width=8, command=self.dateToStamp) \
+            .grid(row=5, column=0, sticky=W, padx=8, pady=5)
+        Button(self.tk, text='刷新', width=8, command=self.refresh) \
+            .grid(row=5, column=1, sticky=W, padx=8, pady=5)
+        Button(self.tk, text=' 复制时间戳 ', width=8, command=self.copy) \
+            .grid(row=5, column=2, sticky=W, padx=8, pady=5)
+        Button(self.tk, text='退出', width=8, command=self.tk.quit) \
+            .grid(row=6, column=2, sticky=W, padx=8, pady=5)
+
+    def stampToDate(self):
+        timeArray = localtime(int(self.ts1.get()))
+        self.date1.set(strftime("%Y-%m-%d %H:%M:%S", timeArray))
+
+    def dateToStamp(self):
+        self.ts2.set(int(mktime(strptime(self.e3.get(), "%Y-%m-%d %H:%M:%S"))))
+
+    def refresh(self):
+        timeArray1 = localtime(int(time()))
+        self.date2.set(strftime("%Y-%m-%d %H:%M:%S", timeArray1))
+        self.ts2.set(int(time()))
+
+    # 复制时间戳
+    def copy(self):
+        wincld.OpenClipboard()
+        wincld.EmptyClipboard()
+        wincld.SetClipboardData(win32con.CF_UNICODETEXT, self.e4.get())
+        wincld.CloseClipboard()
+
+    # 粘贴时间戳
+    def paste(self):
+        wincld.OpenClipboard()
+        text_result = wincld.GetClipboardData(win32con.CF_UNICODETEXT)
+        wincld.CloseClipboard()
+        self.ts1.set(int(text_result))
+
+t = timeTransverter()
+t.run()
+
 mainloop()
